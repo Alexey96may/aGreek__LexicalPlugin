@@ -14,13 +14,40 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class LexicalPlugin {
-  function __construct($string){
-    echo "Hello $string";
+  public function __construct(){
+    add_action( "init", [$this, customPostType]);
+  }
+
+  static function activation() {
+    // Update rewrite rules
+    flush_rewrite_rules();
+  }
+
+  static function deactivation() {
+    // Update rewrite rules
+    flush_rewrite_rules();
+  }
+
+  // static function uninstall() {
+  // }
+
+  public function customPostType(){
+    register_post_type( "trainer_lexica", [
+      "public" => true,
+      "label" => esc_html__( "Lexical Trainer", "Lexical Plugin" ),
+      'supports' => [
+        'title', 'editor', 'author', 'thumbnail'
+      ],
+    ]);
   }
 }
 
 if (class_exists(LexicalPlugin)) {
-  $plugin = new LexicalPlugin("user");
+  $lexPlugin = new LexicalPlugin();
 } else {
   die;
 }
+
+register_activation_hook( __FILE__, array( $lexPlugin, 'activation' ) );
+register_deactivation_hook( __FILE__, array( $lexPlugin, 'deactivation' ) );
+// register_uninstall_hook( __FILE__, array( $lexPlugin, 'uninstall' ) );
