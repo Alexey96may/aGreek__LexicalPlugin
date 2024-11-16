@@ -47,6 +47,8 @@ class LexicalPlugin {
   public function customPostType(){
     register_post_type( "trainer_lexica", [
       "public" => true,
+      "has_archive" => true,
+      "rewrite" => ["slug" => "lexical_trainers"],
       "label" => esc_html__( "Lexical Trainer", "Lexical Plugin" ),
       'supports' => [
         'title', 'editor', 'author', 'thumbnail'
