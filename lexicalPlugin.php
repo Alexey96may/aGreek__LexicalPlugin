@@ -14,8 +14,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class LexicalPlugin {
-  public function __construct(){
+
+  public function register() {
     add_action( "init", [$this, customPostType]);
+    add_action( "admin_enqueue_scripts", [$this, adminEnqueue]);
   }
 
   static function activation() {
@@ -31,6 +33,11 @@ class LexicalPlugin {
   // static function uninstall() {
   // }
 
+  public function adminEnqueue() {
+    wp_enqueue_style( "lexicalTrainerStyle", plugins_url( "/assets/admin/styles.css", __FILE__));
+    wp_enqueue_script( "lexicalTrainerScript", plugins_url( "/assets/admin/scripts.js", __FILE__));
+  }
+
   public function customPostType(){
     register_post_type( "trainer_lexica", [
       "public" => true,
@@ -44,6 +51,7 @@ class LexicalPlugin {
 
 if (class_exists(LexicalPlugin)) {
   $lexPlugin = new LexicalPlugin();
+  $lexPlugin->register();
 } else {
   die;
 }
