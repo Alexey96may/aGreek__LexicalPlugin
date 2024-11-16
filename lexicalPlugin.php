@@ -17,6 +17,7 @@ class LexicalPlugin {
 
   public function register() {
     add_action( "init", [$this, customPostType]);
+    add_action( "wp_enqueue_scripts", [$this, userEnqueue]);
     add_action( "admin_enqueue_scripts", [$this, adminEnqueue]);
   }
 
@@ -36,6 +37,11 @@ class LexicalPlugin {
   public function adminEnqueue() {
     wp_enqueue_style( "lexicalTrainerStyle", plugins_url( "/assets/admin/styles.css", __FILE__));
     wp_enqueue_script( "lexicalTrainerScript", plugins_url( "/assets/admin/scripts.js", __FILE__));
+  }
+
+  public function userEnqueue() {
+    wp_enqueue_style( "lexicalTrainerUserStyle", plugins_url( "/assets/user/styles.css", __FILE__));
+    wp_enqueue_script( "lexicalTrainerUserScript", plugins_url( "/assets/user/scripts.js", __FILE__));
   }
 
   public function customPostType(){
