@@ -19,6 +19,8 @@ class LexicalPlugin {
     add_action( "init", [$this, customPostType]);
     add_action( "wp_enqueue_scripts", [$this, userEnqueue]);
     add_action( "admin_enqueue_scripts", [$this, adminEnqueue]);
+    //Template Loading
+    add_filter( "template_include", [$this, trainerTemplate]);
   }
 
   static function activation() {
@@ -54,6 +56,20 @@ class LexicalPlugin {
         'title', 'editor', 'author', 'thumbnail'
       ],
     ]);
+  }
+
+  public function trainerTemplate($template) {
+    if (is_post_type_archive("trainer_lexica")) {
+      $themeFiles = ['archive-trainer_lexica.php', 'lexical_trainer/archive-trainer_lexica.php'];
+      $isExistInTheme = locate_template($themeFiles, false);
+
+      if ($isExistInTheme !=='') {
+        return $isExistInTheme;
+      } else {
+        return plugin_dir_path(__FILE__) . 'templates/archive-trainer_lexica.php';
+      }
+    }
+    return $template;
   }
 }
 
