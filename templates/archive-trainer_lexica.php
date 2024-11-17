@@ -1,11 +1,20 @@
 
-<?php get_header(); ?>
+<?php get_header(); 
+$options = get_option( 'lexicalSettingsOptions' );
+function optionsSet($options) {
+    if (isset($options["titleForLexicalTrainers"]) && $options["titleForLexicalTrainers"] !== "") {
+        return $options["titleForLexicalTrainers"];
+    } else {
+        return "Задайте заголовок в настройках!";
+    }
+}
+?>
 
 <?php if ( have_posts() ) : ?> 
 
 <main>
     <hr class="hr_title_page" size="3">
-    <h1 class="title_page">Лексика</h1>
+    <h1 class="title_page"><?php echo optionsSet($options); ?></h1>
     <hr class="hr_title_page" size="3">
 
     <section class="category-search">

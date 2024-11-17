@@ -25,6 +25,8 @@ class LexicalPlugin {
     add_action( "admin_menu", [$this, 'addAdminMenu']);
     //Add links to the Plugin Page
     add_filter( "plugin_action_links_".plugin_basename(__FILE__), [$this, 'add_plugin_setting_link']);
+
+    add_action( "admin_init", [$this, 'settings_init']);
   }
 
   static function activation() {
@@ -35,6 +37,30 @@ class LexicalPlugin {
   static function deactivation() {
     // Update rewrite rules
     flush_rewrite_rules();
+  }
+
+
+  public function settings_init() {
+    register_setting( 'lexicalSettings', 'lexicalSettingsOptions' );
+    add_settings_section( "lexicalSettingsSection", esc_html__( "Settings", "Lexical Plugin" ), [$this, "settingSectionHTML"], 'lexical_tools');
+    add_settings_field( 'posts_per_page', esc_html__( "Posts per page", "Lexical Plugin" ), [$this, "postsPerPageHTML"], 'lexical_tools', "lexicalSettingsSection" );
+    add_settings_field( 'titleForLexicalTrainers', esc_html__( "Archive Page Title", "Lexical Plugin" ), [$this, "lexicalTitleHTML"], 'lexical_tools', "lexicalSettingsSection" );
+  }
+
+  public function settingSectionHTML() {
+    echo esc_html__( "Tools Section:", "Lexical Plugin" );
+  }
+
+  public function postsPerPageHTML() { 
+    $options = get_option( 'lexicalSettingsOptions' );?>
+    <input type="text" name="lexicalSettingsOptions[posts_per_page]" value="<?php echo isset($options['posts_per_page']) ? $options['posts_per_page'] : ""?>">
+    <?php 
+  }
+
+  public function lexicalTitleHTML() { 
+    $options = get_option( 'lexicalSettingsOptions' );?>
+    <input type="text" name="lexicalSettingsOptions[titleForLexicalTrainers]" value="<?php echo isset($options['titleForLexicalTrainers']) ? $options['titleForLexicalTrainers'] : ""?>">
+    <?php 
   }
 
   // static function uninstall() {
