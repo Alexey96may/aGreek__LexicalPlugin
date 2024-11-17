@@ -16,11 +16,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 class LexicalPlugin {
 
   public function register() {
-    add_action( "init", [$this, customPostType]);
-    add_action( "wp_enqueue_scripts", [$this, userEnqueue]);
-    add_action( "admin_enqueue_scripts", [$this, adminEnqueue]);
+    add_action( "init", [$this, 'customPostType']);
+    add_action( "wp_enqueue_scripts", [$this, 'userEnqueue']);
+    add_action( "admin_enqueue_scripts", [$this, 'adminEnqueue']);
     //Template Loading
-    add_filter( "template_include", [$this, trainerTemplate]);
+    add_filter( "template_include", [$this, 'trainerTemplate']);
+
+    add_action( "admin_menu", [$this, 'addAdminMenu']);
+    //Add links to the Plugin Page
+    add_filter( "plugin_action_links_".plugin_basename(__FILE__), [$this, 'add_plugin_setting_link']);
   }
 
   static function activation() {
@@ -58,6 +62,30 @@ class LexicalPlugin {
     ]);
   }
 
+  //Adding of the menu page
+  public function addAdminMenu(){
+    add_menu_page(
+      esc_html__( 'Lexica', 'lexical trainer' ),
+      esc_html__( 'Lexical Tools', 'lexical trainer' ),
+      'manage_options',
+      'lexical_tools',
+      [$this, 'adminLexicalToolsMenu'],
+      'dashicons-admin-generic',
+      40
+    );
+  }
+
+  //Add the admin page for Lexical Tools
+  public function adminLexicalToolsMenu(){
+    require_once plugin_dir_path(__FILE__) . 'admin/lexicalToolsPage.php';
+  }
+
+  public function add_plugin_setting_link($links){
+    $myLink = '<a href="admin.php?page=lexical_tools">'. esc_html__('Setting', 'lexical trainer') . '</a>';
+    array_push($links, $myLink);
+    return $links;
+  }
+
   public function trainerTemplate($template) {
     if (is_post_type_archive("trainer_lexica")) {
       $themeFiles = ['archive-trainer_lexica.php', 'lexical_trainer/archive-trainer_lexica.php'];
@@ -71,6 +99,7 @@ class LexicalPlugin {
     }
     return $template;
   }
+
 }
 
 if (class_exists(LexicalPlugin)) {
