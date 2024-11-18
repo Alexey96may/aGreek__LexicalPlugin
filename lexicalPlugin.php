@@ -39,6 +39,24 @@ class LexicalPlugin {
     flush_rewrite_rules();
   }
 
+  
+  public function getTermsHierarcical($taxName) {
+    $taxonomyTerms = get_terms( $taxName, ['hide_empty'=>false, 'parent'=>0] );
+
+    if (!empty($taxonomyTerms)) {
+      foreach ($taxonomyTerms as $term) {
+        echo '<option value="'.$term->term_id.'">'.$term->name.'</option>';
+
+        $chieldTerms = get_terms( $taxName, ['hide_empty'=>false, 'parent'=>$term->term_id] );
+
+        if (!empty($chieldTerms)) {
+          foreach ($chieldTerms as $chield) {
+            echo '<option value="'.$chield->term_id.'"> -'.$chield->name.'</option>';
+          }
+        }
+      }
+    }
+  }
 
   public function settings_init() {
     register_setting( 'lexicalSettings', 'lexicalSettingsOptions' );
@@ -81,11 +99,61 @@ class LexicalPlugin {
       "public" => true,
       "has_archive" => true,
       "rewrite" => ["slug" => "lexical_trainers"],
-      "label" => esc_html__( "Lexical Trainer", "Lexical Plugin" ),
+      "label" => esc_html__( "Lexical Trainer", "lexicalplugin" ),
       'supports' => [
         'title', 'editor', 'author', 'thumbnail'
       ],
     ]);
+
+    $labels = array(
+      'name'              => _x( 'Locations', 'taxonomy general name', 'lexicalplugin' ),
+      'singular_name'     => _x( 'Location', 'taxonomy singular name', 'lexicalplugin' ),
+      'search_items'      => __( 'Search Locations', 'lexicalplugin' ),
+      'all_items'         => __( 'All Locations', 'lexicalplugin' ),
+      'parent_item'       => __( 'Parent Location', 'lexicalplugin' ),
+      'parent_item_colon' => __( 'Parent Location:', 'lexicalplugin' ),
+      'edit_item'         => __( 'Edit Location', 'lexicalplugin' ),
+      'update_item'       => __( 'Update Location', 'lexicalplugin' ),
+      'add_new_item'      => __( 'Add New Location', 'lexicalplugin' ),
+      'new_item_name'     => __( 'New Location Name', 'lexicalplugin' ),
+      'menu_name'         => __( 'Location', 'lexicalplugin' ),
+    );
+  
+    $args = array(
+      'hierarchical'      => true,
+      'labels'            => $labels,
+      'show_ui'           => true,
+      'show_admin_column' => true,
+      'query_var'         => true,
+      'rewrite'           => array( 'slug' => 'room/location' ),
+    );
+
+    register_taxonomy( 'location', 'trainer_lexica', $args);
+
+    $labels_type = array(
+      'name'              => _x( 'Types', 'taxonomy general name', 'lexicalplugin' ),
+      'singular_name'     => _x( 'Type', 'taxonomy singular name', 'lexicalplugin' ),
+      'search_items'      => __( 'Search Types', 'lexicalplugin' ),
+      'all_items'         => __( 'All Types', 'lexicalplugin' ),
+      'parent_item'       => __( 'Parent Type', 'lexicalplugin' ),
+      'parent_item_colon' => __( 'Parent Type:', 'lexicalplugin' ),
+      'edit_item'         => __( 'Edit Type', 'lexicalplugin' ),
+      'update_item'       => __( 'Update Type', 'lexicalplugin' ),
+      'add_new_item'      => __( 'Add New Type', 'lexicalplugin' ),
+      'new_item_name'     => __( 'New Type Name', 'lexicalplugin' ),
+      'menu_name'         => __( 'Type', 'lexicalplugin' ),
+    );
+  
+    $args_type = array(
+      'hierarchical'      => true,
+      'labels'            => $labels_type,
+      'show_ui'           => true,
+      'show_admin_column' => true,
+      'query_var'         => true,
+      'rewrite'           => array( 'slug' => 'room/types' ),
+    );
+
+    register_taxonomy( 'type', 'trainer_lexica', $args_type);
   }
 
   //Adding of the menu page
