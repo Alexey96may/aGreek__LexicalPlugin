@@ -2,6 +2,7 @@
 <?php get_header(); 
 $options = get_option( 'lexicalSettingsOptions' );
 $instance = new LexicalPlugin();
+$templates = new LP_Templater();
 function optionsSet($options) {
     if (isset($options["titleForLexicalTrainers"]) && $options["titleForLexicalTrainers"] !== "") {
         return $options["titleForLexicalTrainers"];
@@ -67,49 +68,10 @@ function optionsSet($options) {
                 $searchTrainersListing = new WP_Query($tlArgs);
 
                 if ($searchTrainersListing->have_posts()) {
-                    while ($searchTrainersListing->have_posts()) { $searchTrainersListing->the_post(); // Начало цикла ?>
-
-                        <h2 class="search-header"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
-                        <div class="search-date"><?php the_time('F j, Y'); // Дата создания поста ?></div>
-                        <p class="author_link">Автор: <?php the_author_posts_link(); ?></p>
-                        <div>
-                            <?php 
-                                $locations = get_the_terms( get_the_ID(), 'location');
-                                if (!empty($locations)) {
-                                echo esc_html_e( 'Location: ', 'lexical_trainers' );
-                                    foreach ($locations as $location) {
-                                    echo $location->name . ' ';
-                                    }
-                                    echo '<br>';
-                                }
-
-                                $types = get_the_terms( get_the_ID(), 'type');
-                                if (!empty($types)) {
-                                    echo esc_html_e( 'Type: ', 'lexical_trainers' );
-                                    foreach ($types as $type) {
-                                        echo $type->name . ' ';
-                                    }
-                                    echo '<br>';
-                                }
-                            ?>
-                        </div>
-                        <div class="search-img"><a href="<?php the_permalink(); ?>"><?php if ( has_post_thumbnail() ) { the_post_thumbnail(); } // Проверяем наличие миниатюры, если есть показываем ?></a>
-                            <div id="search_stat_topic" class="search_stat_topic" name="<?php echo get_the_ID();?>">
-                                <img src="<?php echo bloginfo('template_url'); ?>/assets/img/viewers.png" alt="просмотры"> <span class="views_counter"><?php 
-                                    $vieweredPost = $post->post_viewers;
-                                    if ($vieweredPost >= 1000000) {
-                                        echo round($vieweredPost/1000000) . "М";
-                                    } else if ($vieweredPost >= 1000) {
-                                        echo round($vieweredPost/1000) . "К";
-                                    } else {
-                                        echo $vieweredPost;
-                                    }
-                                    ?></span>
-                            </div>
-                        </div>
-                        <div class="search-text"><?php the_excerpt(); // Содержимое страницы ?></div>
-                        <hr class="hr-text">
-                    <?php 
+                    while ($searchTrainersListing->have_posts()) { $searchTrainersListing->the_post(); // Начало цикла
+                        
+                        $templates->get_template_part( 'lp_archive','content' );
+                        
                     } 
                     
                     $big_serch = 999999999; // need an unlikely integer
@@ -141,49 +103,8 @@ function optionsSet($options) {
                 $trainersListing = new WP_Query($defaultTlArgs);
 
                 if ($trainersListing->have_posts()) {
-                    while ($trainersListing->have_posts()) { $trainersListing->the_post(); // Начало цикла ?>
-
-                        <h2 class="search-header"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
-                        <div class="search-date"><?php the_time('F j, Y'); // Дата создания поста ?></div>
-                        <p class="author_link">Автор: <?php the_author_posts_link(); ?></p>
-                        <div>
-                            <?php 
-                                $locations = get_the_terms( get_the_ID(), 'location');
-                                if (!empty($locations)) {
-                                echo esc_html_e( 'Location: ', 'lexical_trainers' );
-                                    foreach ($locations as $location) {
-                                    echo $location->name . ' ';
-                                    }
-                                    echo '<br>';
-                                }
-
-                                $types = get_the_terms( get_the_ID(), 'type');
-                                if (!empty($types)) {
-                                    echo esc_html_e( 'Type: ', 'lexical_trainers' );
-                                    foreach ($types as $type) {
-                                        echo $type->name . ' ';
-                                    }
-                                    echo '<br>';
-                                }
-                            ?>
-                        </div>
-                        <div class="search-img"><a href="<?php the_permalink(); ?>"><?php if ( has_post_thumbnail() ) { the_post_thumbnail(); } // Проверяем наличие миниатюры, если есть показываем ?></a>
-                            <div id="search_stat_topic" class="search_stat_topic" name="<?php echo get_the_ID();?>">
-                                <img src="<?php echo bloginfo('template_url'); ?>/assets/img/viewers.png" alt="просмотры"> <span class="views_counter"><?php 
-                                    $vieweredPost = $post->post_viewers;
-                                    if ($vieweredPost >= 1000000) {
-                                        echo round($vieweredPost/1000000) . "М";
-                                    } else if ($vieweredPost >= 1000) {
-                                        echo round($vieweredPost/1000) . "К";
-                                    } else {
-                                        echo $vieweredPost;
-                                    }
-                                    ?></span>
-                            </div>
-                        </div>
-                        <div class="search-text"><?php the_excerpt(); // Содержимое страницы ?></div>
-                        <hr class="hr-text">
-                    <?php 
+                    while ($trainersListing->have_posts()) { $trainersListing->the_post(); // Начало цикла
+                        $templates->get_template_part( 'lp_archive','content' );
                     }
 
                     $big = 999999999; // need an unlikely integer

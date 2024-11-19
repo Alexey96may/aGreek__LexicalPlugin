@@ -1,0 +1,2 @@
+1) A bag with pagination where it`s not possible to access to the following pages!
+    - Maybe the problem is in WP Main query loop.

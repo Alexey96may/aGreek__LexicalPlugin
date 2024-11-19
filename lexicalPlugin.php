@@ -13,6 +13,14 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit; //Exit if accessed directly
 }
 
+
+// Template Loader
+define( 'LEXPLUG_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+if (!class_exists('Gamajo_Template_Loader')) {
+  require LEXPLUG_PLUGIN_DIR . 'includes/class-gamajo-template-loader.php';
+}
+require LEXPLUG_PLUGIN_DIR . 'includes/class-lexicalPlugin-template-loader.php';
+
 class LexicalPlugin {
 
   public function register() {
