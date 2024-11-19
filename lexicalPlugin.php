@@ -40,12 +40,16 @@ class LexicalPlugin {
   }
 
   
-  public function getTermsHierarcical($taxName) {
+  public function getTermsHierarcical($taxName, $currentTerm) {
     $taxonomyTerms = get_terms( $taxName, ['hide_empty'=>false, 'parent'=>0] );
 
     if (!empty($taxonomyTerms)) {
       foreach ($taxonomyTerms as $term) {
-        echo '<option value="'.$term->term_id.'">'.$term->name.'</option>';
+        if ($currentTerm == $term->term_id) {
+          echo '<option value="'.$term->term_id.'" selected>'.$term->name.'</option>';
+        } else {
+          echo '<option value="'.$term->term_id.'">'.$term->name.'</option>';
+        }
 
         $chieldTerms = get_terms( $taxName, ['hide_empty'=>false, 'parent'=>$term->term_id] );
 
