@@ -192,7 +192,7 @@ function optionsSet($options) {
                         'base'         => str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) ),
                         'format'       => '?paged=%#%',
                         'total'        => $trainersListing->max_num_pages,
-                        'current'      => max( 1, get_query_var('paged') ),
+                        'current'      => max( 1, get_query_var('page') ),
                     ];
                     echo paginate_links($paginationArgs);
                 } else {
